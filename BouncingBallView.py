@@ -5,16 +5,24 @@ import BouncingBallModel
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 
-timer = 0
+refresh = 30
+time = 0
+screenWidth = 500
+screenHeight = 800
+radius = 0.8
+left = 0.0
+right = 0.0
+bottom = 0.0
+top = 0.0
 
-#  Initialize material property and light source.
+# Initialize material property and light source.
 def init():
-   light_ambient =  [0.0, 1.0, 1.0, 0.0]
-   light_diffuse =  [1.0, 1.0, 1.0, 1.0]
-   light_specular =  [1.0, 1.0, 1.0, 1.0]
-#  light_position is NOT default value
-   light_position =  [0.25, 1.0, 1.0, 0.0]
-
+   light_ambient = [0.0, 1.0, 1.0, 0.0]
+   light_diffuse = [1.0, 1.0, 1.0, 1.0]
+   light_specular = [1.0, 1.0, 1.0, 1.0]
+   # light_position is NOT default value
+   light_position = [0.25, 1.0, 1.0, 0.0]
+   
    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient)
    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse)
    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular)
@@ -23,68 +31,105 @@ def init():
    glEnable(GL_LIGHTING)
    glEnable(GL_LIGHT0)
    glEnable(GL_DEPTH_TEST)
-
+   
 def DrawFloor():
-   glBegin(GL_QUADS)           
-   glVertex3f(-2.0, 0.0, 2.0) 
+   glBegin(GL_QUADS)
+   glVertex3f(-2.0, 0.0, 2.0)
    glVertex3f(-2.0, 0.0,-2.0)
-   glVertex3f( 2.0, 0.0,-2.0) 
-   glVertex3f( 2.0, 0.0, 2.0) 
+   glVertex3f( 2.0, 0.0,-2.0)
+   glVertex3f( 2.0, 0.0, 2.0)
    glEnd()
-
+   
 def display():
-   global timer
+   global time
    
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-   #if timer < 5:
-      #print BouncingBallModel.getObjectPostion('glutSolidSphere')
-
-   #spherePos = BouncingBallModel.updateObject('glutSolidSphere',timer)
    
-   #planePos = BouncingBallModel.updateObject('glClipPlane',timer)
+   glLoadIdentity()
    
-   glPushMatrix()
-   glutSolidSphere(0.8, 40, 40)
-   glPopMatrix()
-   '''   
+   spherePos = BouncingBallModel.updateObject('glutSolidSphere',time)
+   planePos = BouncingBallModel.updateObject('glClipPlane',time)
+   
+   #print str(spherePos) + " - " + str(time) 
+   
    glPushMatrix()
    glTranslatef(spherePos[0], spherePos[1], spherePos[2])
-   glutSolidSphere(0.8, 40, 40)
+   glutSolidSphere(radius, 40, 40)
    glPopMatrix()
-   
-   
    glPushMatrix()
    DrawFloor()
    glPopMatrix()
+   
    '''
+   glPushMatrix()
+   glTranslatef(0, 5, 0)
+   glutSolidSphere(0.8, 40, 40)
+   glPopMatrix()
+   
+   glPushMatrix()
+   glTranslatef(0, 4.694, 0)
+   glutSolidSphere(0.8, 40, 40)
+   glPopMatrix()
+   
+   glPushMatrix()
+   glTranslatef(0, 3.469, 0)
+   glutSolidSphere(0.8, 40, 40)
+   glPopMatrix()
+   
+   glPushMatrix()
+   glTranslatef(0, 0.712, 0)
+   glutSolidSphere(0.8, 40, 40)
+   glPopMatrix()
+   '''
+   
+   glutSwapBuffers()
+   
    glFlush()
-   glutPostRedisplay()
-   timer =  timer + .25
+   time = time + .25
    
 def reshape(w, h):
+   global left,right,bottom,top
+   
+   print w,h
+   
+   aspect = w / h
+   
    glViewport(0, 0, w, h)
    glMatrixMode (GL_PROJECTION)
    glLoadIdentity()
+   
    if w <= h:
-      glOrtho(-2.5, 2.5, -2.5*h/w, 
-               2.5*h/w, -10.0, 10.0)
-   else: 
-      glOrtho(-2.5*w/h, 
-               2.5*w/h, -2.5, 2.5, -10.0, 10.0)
+      left = -1.0
+      right = 1.0
+      bottom = -1.0 / aspect
+      top = 1.0 / aspect
+   else:
+      left = 1.0 * aspect
+      right = 1.0 * aspect
+      bottom = -1.0 
+      top = 1.0
+      
+   glOrtho(left,right,bottom,top, -10.0, 10.0)
+   
+   BouncingBallModel.setScreenBoundries(left + radius, right - radius, bottom + radius, top - radius)   
    glMatrixMode(GL_MODELVIEW)
    glLoadIdentity()
-   gluLookAt(0,0,-10,0,0,0,0,1,0)
-
+   
+def Timer(value):
+   glutPostRedisplay()
+   glutTimerFunc(refresh, Timer, 0)
    
 if __name__ == '__main__':
-
+   
    glutInit(sys.argv)
-   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH)
-   glutInitWindowSize (500, 1000)
+   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+   glutInitWindowSize (screenWidth, screenHeight)
    glutCreateWindow('Bouncing Ball')
    init()
    glutReshapeFunc(reshape)
-   BouncingBallModel.addObjects('glutSolidSphere', [0,0,0], 0, 1.0)
-   BouncingBallModel.addObjects('glClipPlane', [0,-1,0], 0, 0.0)
    glutDisplayFunc(display)
+   BouncingBallModel.addObjects('glutSolidSphere', [0,5,0], 0, [0,9.8,0])
+   BouncingBallModel.addObjects('glClipPlane', [0,-1,0], 0, [0,0,0])
+   glutTimerFunc(0, Timer, 0)
    glutMainLoop()
+   
