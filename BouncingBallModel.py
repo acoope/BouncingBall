@@ -63,6 +63,3 @@ def updateObject(obj,t):
     objects[obj]['position'] = [x,y,z]
     
     return objects[obj]['position']
-    
-def getObjectPostion(obj):
-    return objects[obj]['position']

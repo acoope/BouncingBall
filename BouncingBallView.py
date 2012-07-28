@@ -33,14 +33,6 @@ def init():
    glEnable(GL_LIGHT0)
    glEnable(GL_DEPTH_TEST)
    
-def DrawFloor():
-   glBegin(GL_QUADS)
-   glVertex3f(-2.0, 0.0, 2.0)
-   glVertex3f(-2.0, 0.0,-2.0)
-   glVertex3f( 2.0, 0.0,-2.0)
-   glVertex3f( 2.0, 0.0, 2.0)
-   glEnd()
-   
 def display():
    global time
    
@@ -49,9 +41,6 @@ def display():
    glLoadIdentity()
    
    spherePos = BouncingBallModel.updateObject('glutSolidSphere',time)
-   planePos = BouncingBallModel.updateObject('glClipPlane',time)
-   
-   #print str(spherePos) + " - " + str(time) 
    
    glPushMatrix()
    glTranslatef(spherePos[0], spherePos[1], spherePos[2])
@@ -60,29 +49,7 @@ def display():
    glPushMatrix()
    DrawFloor()
    glPopMatrix()
-   
-   '''
-   glPushMatrix()
-   glTranslatef(0, 5, 0)
-   glutSolidSphere(0.8, 40, 40)
-   glPopMatrix()
-   
-   glPushMatrix()
-   glTranslatef(0, 4.694, 0)
-   glutSolidSphere(0.8, 40, 40)
-   glPopMatrix()
-   
-   glPushMatrix()
-   glTranslatef(0, 3.469, 0)
-   glutSolidSphere(0.8, 40, 40)
-   glPopMatrix()
-   
-   glPushMatrix()
-   glTranslatef(0, 0.712, 0)
-   glutSolidSphere(0.8, 40, 40)
-   glPopMatrix()
-   '''
-   
+
    glutSwapBuffers()
    
    glFlush()
@@ -125,15 +92,15 @@ if __name__ == '__main__':
    init()
    glutReshapeFunc(reshape)
    glutDisplayFunc(display)
-   BouncingBallModel.addObjects('glutSolidSphere', [0,5,0], 0, [0.0,0.1,0])
-   BouncingBallModel.addObjects('glClipPlane', [0,-1,0], 0, [0,0,0])
    glutTimerFunc(0, Timer, 0)
    glutKeyboardFunc(BouncingBallController.keyEvent)
    glutSpecialFunc(BouncingBallController.specialKeyEvent)
+   BouncingBallModel.addObjects('glutSolidSphere', [0,5,0], 0, [0.0,0.1,0])
+   
    print "Instructions:"
-   print "~ To pause the ball press the space bar"
-   print "~ To increase the speed in the x direction, press the left arrow"
-   print "~ To decrease the speed in the x direction, press the right arrow"
+   print "~ To pause or restart the ball press the space bar"
+   print "~ To decrease the speed in the x direction, press the left arrow"
+   print "~ To increase the speed in the x direction, press the right arrow"
    print "~ To increase the speed in the y direction, press the up arrow"
    print "~ To decrease the speed in the x direction, press the down arrow"
    glutMainLoop()
