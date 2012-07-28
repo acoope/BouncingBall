@@ -2,6 +2,7 @@
 
 import sys
 import BouncingBallModel
+import BouncingBallController
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 
@@ -90,26 +91,22 @@ def display():
 def reshape(w, h):
    global left,right,bottom,top
    
-   print w,h
-   
-   aspect = w / h
-   
    glViewport(0, 0, w, h)
    glMatrixMode (GL_PROJECTION)
    glLoadIdentity()
    
    if w <= h:
-      left = -1.0
-      right = 1.0
-      bottom = -1.0 / aspect
-      top = 1.0 / aspect
+      left = -2.5
+      right = 2.5
+      bottom = -2.5 * h/w
+      top = 2.5 * h/w
    else:
-      left = 1.0 * aspect
-      right = 1.0 * aspect
-      bottom = -1.0 
-      top = 1.0
+      left = 2.5 * w/h
+      right = 2.5 * w/h
+      bottom = -2.5 
+      top = 2.5
       
-   glOrtho(left,right,bottom,top, -10.0, 10.0)
+   glOrtho(left,right,bottom,top, -1.0, 1.0)
    
    BouncingBallModel.setScreenBoundries(left + radius, right - radius, bottom + radius, top - radius)   
    glMatrixMode(GL_MODELVIEW)
@@ -128,8 +125,9 @@ if __name__ == '__main__':
    init()
    glutReshapeFunc(reshape)
    glutDisplayFunc(display)
-   BouncingBallModel.addObjects('glutSolidSphere', [0,5,0], 0, [0,9.8,0])
+   BouncingBallModel.addObjects('glutSolidSphere', [0,5,0], 0, [0.0,0.1,0])
    BouncingBallModel.addObjects('glClipPlane', [0,-1,0], 0, [0,0,0])
    glutTimerFunc(0, Timer, 0)
+   glutKeyboardFunc(BouncingBallController.keyEvent)
    glutMainLoop()
    
