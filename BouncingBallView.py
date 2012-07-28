@@ -129,5 +129,12 @@ if __name__ == '__main__':
    BouncingBallModel.addObjects('glClipPlane', [0,-1,0], 0, [0,0,0])
    glutTimerFunc(0, Timer, 0)
    glutKeyboardFunc(BouncingBallController.keyEvent)
+   glutSpecialFunc(BouncingBallController.specialKeyEvent)
+   print "Instructions:"
+   print "~ To pause the ball press the space bar"
+   print "~ To increase the speed in the x direction, press the left arrow"
+   print "~ To decrease the speed in the x direction, press the right arrow"
+   print "~ To increase the speed in the y direction, press the up arrow"
+   print "~ To decrease the speed in the x direction, press the down arrow"
    glutMainLoop()
    
