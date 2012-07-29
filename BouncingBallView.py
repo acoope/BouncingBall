@@ -46,9 +46,6 @@ def display():
    glTranslatef(spherePos[0], spherePos[1], spherePos[2])
    glutSolidSphere(radius, 40, 40)
    glPopMatrix()
-   glPushMatrix()
-   DrawFloor()
-   glPopMatrix()
 
    glutSwapBuffers()
    
@@ -73,7 +70,7 @@ def reshape(w, h):
       bottom = -2.5 
       top = 2.5
       
-   glOrtho(left,right,bottom,top, -1.0, 1.0)
+   glOrtho(left,right,bottom,top, -10.0, 10.0)
    
    BouncingBallModel.setScreenBoundries(left + radius, right - radius, bottom + radius, top - radius)   
    glMatrixMode(GL_MODELVIEW)
